@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {"id": "NVDA", "label": "NVIDIA", "type": "COMPANY", "ticker": "NVDA", "industry": "Semiconductors", "val": 10},
+    {"id": "MSFT", "label": "Microsoft", "type": "COMPANY", "ticker": "MSFT", "industry": "Software", "val": 10},
+    {"id": "OAI", "label": "OpenAI", "type": "COMPANY", "industry": "AI", "val": 8},
+    {"id": "BLK", "label": "BlackRock", "type": "FUND", "ticker": "BLK", "industry": "Asset Mgmt", "val": 9},
+    {"id": "TSMC", "label": "TSMC", "type": "COMPANY", "ticker": "TSM", "industry": "Semiconductors", "val": 9},
+    {"id": "APPL", "label": "Apple", "type": "COMPANY", "ticker": "AAPL", "industry": "Consumer Electronics", "val": 10},
+    {"id": "ARM", "label": "Arm Holdings", "type": "COMPANY", "ticker": "ARM", "industry": "Semiconductors", "val": 7},
+    {"id": "SOFT", "label": "SoftBank", "type": "FUND", "ticker": "SFTBY", "industry": "VC", "val": 8},
+    {"id": "META", "label": "Meta", "type": "COMPANY", "ticker": "META", "industry": "Social Media", "val": 9},
+    {"id": "AMZN", "label": "Amazon", "type": "COMPANY", "ticker": "AMZN", "industry": "E-commerce", "val": 10}
+  ],
+  "links": [
+    {"source": "MSFT", "target": "OAI", "type": "OWNERSHIP", "description": "Microsoft owns significant equity stake in OpenAI", "data": {"pct": 49}},
+    {"source": "NVDA", "target": "OAI", "type": "SUPPLIER", "description": "NVIDIA supplies H100 GPUs to OpenAI"},
+    {"source": "TSMC", "target": "NVDA", "type": "SUPPLIER", "description": "TSMC manufactures chips for NVIDIA"},
+    {"source": "BLK", "target": "NVDA", "type": "OWNERSHIP", "description": "BlackRock is a major shareholder"},
+    {"source": "BLK", "target": "MSFT", "type": "OWNERSHIP", "description": "BlackRock is a major shareholder"},
+    {"source": "SOFT", "target": "ARM", "type": "OWNERSHIP", "description": "SoftBank owns majority of Arm"},
+    {"source": "APPL", "target": "ARM", "type": "LICENSING", "description": "Apple licenses architecture from Arm"},
+    {"source": "NVDA", "target": "ARM", "type": "LICENSING", "description": "NVIDIA licenses architecture from Arm"},
+    {"source": "MSFT", "target": "META", "type": "PARTNERSHIP", "description": "Llama 2 partnership on Azure"},
+    {"source": "AMZN", "target": "NVDA", "type": "CLIENT", "description": "AWS purchases GPUs for cloud"}
+  ]
+}
