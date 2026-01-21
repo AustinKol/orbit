@@ -32,8 +32,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
           width: '100%',
           maxWidth: '500px',
           maxHeight: isCollapsed ? 'auto' : '70vh',
-          backgroundColor: '#0f172a',
-          borderTop: '3px solid #8b5cf6',
+          backgroundColor: '#1a1a1a',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
           borderRadius: '0 24px 0 0',
           zIndex: 9999,
           display: 'flex',
@@ -45,24 +45,24 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
         {/* Drag Handle */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 8px' }}>
           <motion.div 
-            style={{ width: 48, height: 6, backgroundColor: '#475569', borderRadius: 3 }}
+            style={{ width: 48, height: 6, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }}
           />
         </div>
 
         {/* Header */}
         <div style={{ 
           padding: '16px 24px', 
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), transparent)'
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          background: 'transparent'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <motion.div 
                 style={{ 
                   padding: 10, 
-                  backgroundColor: 'rgba(139, 92, 246, 0.3)', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)', 
                   borderRadius: 12,
-                  border: '1px solid rgba(255,255,255,0.1)'
+                  border: '1px solid rgba(255,255,255,0.08)'
                 }}
               >
                 <Building2 color="white" size={20} />
@@ -74,11 +74,11 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                   <span style={{ 
                     padding: '4px 10px', 
-                    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     borderRadius: 20,
                     fontSize: 12,
-                    color: 'rgba(255,255,255,0.9)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(255,255,255,0.08)',
                     textTransform: 'uppercase'
                   }}>
                     {node.type}
@@ -86,11 +86,11 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                   {node.ticker && (
                     <span style={{ 
                       padding: '4px 10px', 
-                      backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
                       borderRadius: 20,
                       fontSize: 12,
-                      color: '#c4b5fd',
-                      border: '1px solid rgba(139, 92, 246, 0.3)'
+                      color: 'rgba(255,255,255,0.6)',
+                      border: '1px solid rgba(255,255,255,0.1)'
                     }}>
                       {node.ticker}
                     </span>
@@ -176,13 +176,13 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                   transition={{ delay: 0.1 }}
                   style={{ 
                     padding: 20, 
-                    backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.1)'
+                    border: '1px solid rgba(255,255,255,0.08)'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <Building2 color="#a78bfa" size={16} />
+                    <Building2 color="rgba(255,255,255,0.6)" size={16} />
                     <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                       About
                     </span>
@@ -202,7 +202,7 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                       transition={{ delay: 0.15 }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                        <DollarSign color="#a78bfa" size={16} />
+                        <DollarSign color="rgba(255,255,255,0.6)" size={16} />
                         <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                           Market Data
                         </span>
@@ -215,8 +215,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                               alignItems: 'center', 
                               justifyContent: 'space-between',
                               padding: 14,
-                              backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                              border: '1px solid rgba(139, 92, 246, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
                               borderRadius: 10
                             }}
                           >
@@ -225,11 +225,11 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                                 width: 32, 
                                 height: 32, 
                                 borderRadius: 8, 
-                                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#c4b5fd'
+                                color: 'rgba(255,255,255,0.7)'
                               }}>
                                 <DollarSign size={16} />
                               </div>
@@ -283,8 +283,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                               alignItems: 'center', 
                               justifyContent: 'space-between',
                               padding: 14,
-                              backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                              border: '1px solid rgba(139, 92, 246, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
                               borderRadius: 10
                             }}
                           >
@@ -293,11 +293,11 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                                 width: 32, 
                                 height: 32, 
                                 borderRadius: 8, 
-                                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#c4b5fd'
+                                color: 'rgba(255,255,255,0.7)'
                               }}>
                                 <Activity size={16} />
                               </div>
@@ -316,8 +316,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                               alignItems: 'center', 
                               justifyContent: 'space-between',
                               padding: 14,
-                              backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                              border: '1px solid rgba(139, 92, 246, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
                               borderRadius: 10
                             }}
                           >
@@ -326,11 +326,11 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                                 width: 32, 
                                 height: 32, 
                                 borderRadius: 8, 
-                                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#c4b5fd'
+                                color: 'rgba(255,255,255,0.7)'
                               }}>
                                 <Globe size={16} />
                               </div>
@@ -352,7 +352,7 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                     transition={{ delay: 0.2 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                      <Activity color="#a78bfa" size={16} />
+                        <Activity color="rgba(255,255,255,0.6)" size={16} />
                       <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                         Actions
                       </span>
@@ -364,8 +364,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                         style={{ 
                           width: '100%',
                           padding: '14px 20px',
-                          background: 'linear-gradient(to right, #8b5cf6, #a855f7)',
-                          border: 'none',
+                          background: 'rgba(255, 255, 255, 0.15)',
+                          border: '1px solid rgba(255,255,255,0.1)',
                           borderRadius: 12,
                           color: 'white',
                           fontSize: 14,
@@ -404,18 +404,18 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                     transition={{ delay: 0.25 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <Link2 color="#a78bfa" size={18} />
+                      <Link2 color="rgba(255,255,255,0.6)" size={18} />
                       <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
                         Connected Companies
                       </span>
                       <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, rgba(255,255,255,0.1), transparent)' }} />
                       <span style={{ 
                         padding: '4px 12px',
-                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: 20,
                         fontSize: 12,
-                        color: '#c4b5fd'
+                        color: 'rgba(255,255,255,0.6)'
                       }}>
                         {connectedNodes.length}
                       </span>
@@ -435,8 +435,8 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                             alignItems: 'center',
                             gap: 12,
                             padding: 12,
-                            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
                             borderRadius: 10,
                             cursor: 'pointer',
                             textAlign: 'left'
@@ -446,13 +446,13 @@ export default function TradingCard({ node, onClose, connectedNodes = [], onNode
                             width: 36, 
                             height: 36, 
                             borderRadius: 8, 
-                            backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0
                           }}>
-                            <Building2 color="#a78bfa" size={16} />
+                            <Building2 color="rgba(255,255,255,0.6)" size={16} />
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ 

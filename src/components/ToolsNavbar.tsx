@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Sliders, GitBranch, Search, X, ArrowRight, CheckCircle2, Loader2, AlertCircle, CheckSquare, Square, Info, Star, Sparkles, Route, RefreshCw } from 'lucide-react';
+import { Sliders, GitBranch, Search, X, ArrowRight, CheckCircle2, Loader2, AlertCircle, CheckSquare, Square, Info, Star, Sparkles, Route, RefreshCw, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraphNode, EdgeType, PathItem, PathsResponse, CycleResultWithEdges, CyclesResponse } from '@/types';
 
@@ -18,6 +18,8 @@ interface ToolsNavbarProps {
   onCycleModeToggle: (enabled: boolean) => void;
   onCyclesFound: (cycles: CycleResultWithEdges[] | null, highlightNodes: Set<string>, highlightEdges: Set<string>) => void;
   selectedNodeId?: string;
+  // Search props
+  onSearchSelect: (node: GraphNode) => void;
 }
 
 type ActiveTool = 'filter' | 'path' | 'cycles' | null;
@@ -33,9 +35,16 @@ export default function ToolsNavbar({
   cycleMode,
   onCycleModeToggle,
   onCyclesFound,
-  selectedNodeId
+  selectedNodeId,
+  onSearchSelect
 }: ToolsNavbarProps) {
   const [activeTool, setActiveTool] = useState<ActiveTool>(null);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<GraphNode[]>([]);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleToolClick = (tool: ActiveTool) => {
     if (tool === 'cycles') {
@@ -58,216 +67,296 @@ export default function ToolsNavbar({
     }
   }, [cycleMode]);
 
+  // Search handlers
+  const handleSearch = (val: string) => {
+    setSearchQuery(val);
+    setSelectedIndex(0);
+    if (val.length > 1) {
+      const filtered = nodes.filter(n =>
+        n.label.toLowerCase().includes(val.toLowerCase())
+      );
+      setSearchResults(filtered.slice(0, 6));
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleSelectNode = (node: GraphNode) => {
+    onSearchSelect(node);
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsSearchFocused(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchResults.length > 0) {
+      e.preventDefault();
+      handleSelectNode(searchResults[selectedIndex]);
+    } else if (e.key === 'ArrowDown' && searchResults.length > 0) {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev + 1) % searchResults.length);
+    } else if (e.key === 'ArrowUp' && searchResults.length > 0) {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev - 1 + searchResults.length) % searchResults.length);
+    } else if (e.key === 'Escape') {
+      setSearchResults([]);
+      setIsSearchFocused(false);
+      setSearchQuery('');
+    }
+  };
+
   return (
-    <div className="absolute top-24 left-6 z-40">
+    <div style={{
+      position: 'absolute',
+      top: 20,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 40
+    }}>
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-3"
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}
       >
-        {/* Modern toolbar */}
+        {/* Unified compact toolbar */}
         <div 
           style={{
             display: 'flex',
-            gap: 8,
-            padding: 8,
-            backgroundColor: 'rgba(15, 23, 42, 0.8)',
+            alignItems: 'center',
+            gap: 2,
+            padding: 6,
+            backgroundColor: 'rgba(26, 26, 26, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 16,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset'
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 14,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
           }}
         >
+          {/* Search Input */}
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 12px',
+              backgroundColor: isSearchFocused ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)',
+              border: isSearchFocused ? '1px solid rgba(255,255,255,0.15)' : '1px solid transparent',
+              borderRadius: 10,
+              transition: 'all 0.2s ease',
+              minWidth: 200
+            }}>
+              <Search size={14} color={isSearchFocused ? 'white' : '#64748b'} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                onKeyDown={handleKeyDown}
+                placeholder="Search companies..."
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: 13,
+                  color: 'white',
+                  width: 140
+                }}
+              />
+            </div>
+            
+            {/* Search Results Dropdown */}
+            <AnimatePresence>
+              {isSearchFocused && searchQuery.length > 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -5, scale: 0.98 }}
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    marginTop: 6,
+                    backgroundColor: '#1a1a1a',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: 12,
+                    boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
+                    overflow: 'hidden',
+                    zIndex: 100
+                  }}
+                >
+                  {searchResults.length > 0 ? (
+                    <div style={{ padding: 4 }}>
+                      {searchResults.map((node, idx) => (
+                        <motion.button
+                          key={node.id}
+                          onClick={() => handleSelectNode(node)}
+                          style={{
+                            width: '100%',
+                            textAlign: 'left',
+                            padding: '8px 10px',
+                            borderRadius: 8,
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            background: idx === selectedIndex ? 'rgba(255,255,255,0.1)' : 'transparent'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (idx !== selectedIndex) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            if (idx !== selectedIndex) e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <Building2 size={12} color={idx === selectedIndex ? 'white' : '#64748b'} />
+                          <span style={{ 
+                            color: idx === selectedIndex ? 'white' : 'rgba(255,255,255,0.7)',
+                            fontSize: 12
+                          }}>
+                            {node.label}
+                          </span>
+                        </motion.button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ padding: 12, textAlign: 'center', color: '#64748b', fontSize: 11 }}>
+                      No results
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Divider */}
+          <div style={{ width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.1)', margin: '0 4px' }} />
+
           {/* Filter Button */}
           <motion.button
             onClick={() => handleToolClick('filter')}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Filters"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
-              padding: '10px 16px',
-              backgroundColor: activeTool === 'filter' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255,255,255,0.03)',
-              border: activeTool === 'filter' ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid rgba(255,255,255,0.06)',
-              borderRadius: 12,
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              backgroundColor: activeTool === 'filter' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+              border: 'none',
+              borderRadius: 8,
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              position: 'relative'
             }}
           >
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: activeTool === 'filter' ? 'rgba(139, 92, 246, 0.3)' : 'rgba(255,255,255,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Sliders size={16} color={activeTool === 'filter' ? '#c4b5fd' : '#94a3b8'} />
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ 
-                fontSize: 13, 
-                fontWeight: 600, 
-                color: activeTool === 'filter' ? 'white' : 'rgba(255,255,255,0.8)'
-              }}>
-                Filters
-              </div>
-              <div style={{ fontSize: 10, color: '#64748b' }}>
-                {enabledTypes.size} active
-              </div>
-            </div>
+            <Sliders size={16} color={activeTool === 'filter' ? 'white' : '#94a3b8'} />
+            {enabledTypes.size < Object.values(EdgeType).length && (
+              <div style={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                backgroundColor: '#f59e0b'
+              }} />
+            )}
           </motion.button>
 
           {/* Path Button */}
           <motion.button
             onClick={() => handleToolClick('path')}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Path Finder"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
-              padding: '10px 16px',
-              backgroundColor: activeTool === 'path' ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.03)',
-              border: activeTool === 'path' ? '1px solid rgba(6, 182, 212, 0.4)' : '1px solid rgba(255,255,255,0.06)',
-              borderRadius: 12,
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              backgroundColor: activeTool === 'path' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+              border: 'none',
+              borderRadius: 8,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: activeTool === 'path' ? 'rgba(6, 182, 212, 0.3)' : 'rgba(255,255,255,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <GitBranch size={16} color={activeTool === 'path' ? '#67e8f9' : '#94a3b8'} />
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ 
-                fontSize: 13, 
-                fontWeight: 600, 
-                color: activeTool === 'path' ? 'white' : 'rgba(255,255,255,0.8)'
-              }}>
-                Path Finder
-              </div>
-              <div style={{ fontSize: 10, color: '#64748b' }}>
-                Find connections
-              </div>
-            </div>
+            <GitBranch size={16} color={activeTool === 'path' ? 'white' : '#94a3b8'} />
           </motion.button>
 
           {/* Watchlist Button */}
           <motion.button
             onClick={onWatchlistClick}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Watchlist"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '10px 16px',
-              backgroundColor: watchlistCount > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.03)',
-              border: watchlistCount > 0 ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid rgba(255,255,255,0.06)',
-              borderRadius: 12,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: watchlistCount > 0 ? 'rgba(251, 191, 36, 0.25)' : 'rgba(255,255,255,0.06)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              width: 36,
+              height: 36,
+              backgroundColor: watchlistCount > 0 ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              border: 'none',
+              borderRadius: 8,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
               position: 'relative'
-            }}>
-              <Star size={16} color={watchlistCount > 0 ? '#fbbf24' : '#94a3b8'} fill={watchlistCount > 0 ? '#fbbf24' : 'none'} />
-              {watchlistCount > 0 && (
-                <div style={{
-                  position: 'absolute',
-                  top: -4,
-                  right: -4,
-                  width: 16,
-                  height: 16,
-                  borderRadius: '50%',
-                  backgroundColor: '#fbbf24',
-                  color: '#000',
-                  fontSize: 9,
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  {watchlistCount > 9 ? '9+' : watchlistCount}
-                </div>
-              )}
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ 
-                fontSize: 13, 
-                fontWeight: 600, 
-                color: watchlistCount > 0 ? '#fef08a' : 'rgba(255,255,255,0.8)'
+            }}
+          >
+            <Star size={16} color={watchlistCount > 0 ? '#fbbf24' : '#94a3b8'} fill={watchlistCount > 0 ? '#fbbf24' : 'none'} />
+            {watchlistCount > 0 && (
+              <div style={{
+                position: 'absolute',
+                top: 2,
+                right: 2,
+                minWidth: 14,
+                height: 14,
+                borderRadius: 7,
+                backgroundColor: 'rgba(255,255,255,0.9)',
+                color: '#000',
+                fontSize: 8,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0 3px'
               }}>
-                Watchlist
+                {watchlistCount > 9 ? '9+' : watchlistCount}
               </div>
-              <div style={{ fontSize: 10, color: '#64748b' }}>
-                {watchlistCount > 0 ? `${watchlistCount} stocks` : 'Track stocks'}
-              </div>
-            </div>
+            )}
           </motion.button>
 
-          {/* Cycles Button (Circle Jerk Mode) */}
+          {/* Cycles Button */}
           <motion.button
             onClick={() => handleToolClick('cycles')}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Cycles"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
-              padding: '10px 16px',
-              backgroundColor: cycleMode ? 'rgba(236, 72, 153, 0.2)' : 'rgba(255,255,255,0.03)',
-              border: cycleMode ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(255,255,255,0.06)',
-              borderRadius: 12,
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              backgroundColor: cycleMode ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+              border: 'none',
+              borderRadius: 8,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: cycleMode ? 'rgba(236, 72, 153, 0.3)' : 'rgba(255,255,255,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <RefreshCw size={16} color={cycleMode ? '#f9a8d4' : '#94a3b8'} />
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ 
-                fontSize: 13, 
-                fontWeight: 600, 
-                color: cycleMode ? 'white' : 'rgba(255,255,255,0.8)'
-              }}>
-                Cycles
-              </div>
-              <div style={{ fontSize: 10, color: '#64748b' }}>
-                {cycleMode ? 'Active' : 'Find loops'}
-              </div>
-            </div>
+            <RefreshCw size={16} color={cycleMode ? 'white' : '#94a3b8'} />
           </motion.button>
         </div>
 
-        {/* Active tool panel */}
+        {/* Active tool panel - positioned below the bar */}
         <AnimatePresence>
           {activeTool === 'filter' && (
             <motion.div
@@ -334,11 +423,11 @@ function RelationshipFilterPanel({
     <div
       style={{
         width: 340,
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        backgroundColor: '#1a1a1a',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(139, 92, 246, 0.2)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: 20,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
         overflow: 'hidden'
       }}
     >
@@ -346,7 +435,7 @@ function RelationshipFilterPanel({
       <div style={{
         padding: '16px 20px',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        background: 'linear-gradient(to right, rgba(139, 92, 246, 0.15), transparent)',
+        background: 'transparent',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -356,12 +445,12 @@ function RelationshipFilterPanel({
             width: 36,
             height: 36,
             borderRadius: 10,
-            backgroundColor: 'rgba(139, 92, 246, 0.25)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <Sliders size={18} color="#c4b5fd" />
+            <Sliders size={18} color="rgba(255,255,255,0.7)" />
           </div>
           <div>
             <h3 style={{ color: 'white', fontSize: 15, fontWeight: 600, margin: 0 }}>
@@ -631,11 +720,11 @@ function PathFinderPanel({
     <div
       style={{
         width: 360,
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        backgroundColor: '#1a1a1a',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(6, 182, 212, 0.2)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: 20,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
         overflow: 'hidden'
       }}
     >
@@ -643,7 +732,7 @@ function PathFinderPanel({
       <div style={{
         padding: '16px 20px',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        background: 'linear-gradient(to right, rgba(6, 182, 212, 0.15), transparent)',
+        background: 'transparent',
         display: 'flex',
         alignItems: 'center',
         gap: 12
@@ -652,12 +741,12 @@ function PathFinderPanel({
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: 'rgba(6, 182, 212, 0.25)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <GitBranch size={18} color="#67e8f9" />
+          <GitBranch size={18} color="rgba(255,255,255,0.7)" />
         </div>
         <div>
           <h3 style={{ color: 'white', fontSize: 15, fontWeight: 600, margin: 0 }}>
@@ -672,7 +761,7 @@ function PathFinderPanel({
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* From Node */}
         <div>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#67e8f9', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Start Company
           </label>
           <div style={{ position: 'relative' }}>
@@ -682,8 +771,8 @@ function PathFinderPanel({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 14px',
-                backgroundColor: 'rgba(6, 182, 212, 0.15)',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: 10
               }}>
                 <span style={{ color: 'white', fontSize: 13, fontWeight: 500 }}>{fromSelected.label}</span>
@@ -693,7 +782,7 @@ function PathFinderPanel({
                   whileTap={{ scale: 0.9 }}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
                 >
-                  <X size={14} color="#67e8f9" />
+                  <X size={14} color="rgba(255,255,255,0.7)" />
                 </motion.button>
               </div>
             ) : (
@@ -723,7 +812,7 @@ function PathFinderPanel({
                     left: 0,
                     right: 0,
                     marginTop: 6,
-                    backgroundColor: 'rgba(15, 23, 42, 0.98)',
+                    backgroundColor: '#1a1a1a',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: 10,
                     overflow: 'hidden',
@@ -744,7 +833,7 @@ function PathFinderPanel({
                           borderBottom: '1px solid rgba(255,255,255,0.05)',
                           cursor: 'pointer'
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                       >
                         {node.label}
@@ -763,19 +852,19 @@ function PathFinderPanel({
             width: 32,
             height: 32,
             borderRadius: 8,
-            backgroundColor: 'rgba(6, 182, 212, 0.15)',
-            border: '1px solid rgba(6, 182, 212, 0.3)',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <ArrowRight size={14} color="#67e8f9" style={{ transform: 'rotate(90deg)' }} />
+            <ArrowRight size={14} color="rgba(255,255,255,0.5)" style={{ transform: 'rotate(90deg)' }} />
           </div>
         </div>
 
         {/* To Node */}
         <div>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#67e8f9', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             End Company
           </label>
           <div style={{ position: 'relative' }}>
@@ -785,8 +874,8 @@ function PathFinderPanel({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 14px',
-                backgroundColor: 'rgba(6, 182, 212, 0.15)',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: 10
               }}>
                 <span style={{ color: 'white', fontSize: 13, fontWeight: 500 }}>{toSelected.label}</span>
@@ -796,7 +885,7 @@ function PathFinderPanel({
                   whileTap={{ scale: 0.9 }}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
                 >
-                  <X size={14} color="#67e8f9" />
+                  <X size={14} color="rgba(255,255,255,0.7)" />
                 </motion.button>
               </div>
             ) : (
@@ -826,7 +915,7 @@ function PathFinderPanel({
                     left: 0,
                     right: 0,
                     marginTop: 6,
-                    backgroundColor: 'rgba(15, 23, 42, 0.98)',
+                    backgroundColor: '#1a1a1a',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: 10,
                     overflow: 'hidden',
@@ -847,7 +936,7 @@ function PathFinderPanel({
                           borderBottom: '1px solid rgba(255,255,255,0.05)',
                           cursor: 'pointer'
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                       >
                         {node.label}
@@ -875,10 +964,10 @@ function PathFinderPanel({
                 style={{
                   flex: 1,
                   padding: '8px 0',
-                  backgroundColor: maxDepth === depth ? 'rgba(6, 182, 212, 0.25)' : 'rgba(255,255,255,0.04)',
-                  border: maxDepth === depth ? '1px solid rgba(6, 182, 212, 0.4)' : '1px solid rgba(255,255,255,0.08)',
+                  backgroundColor: maxDepth === depth ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255,255,255,0.04)',
+                  border: maxDepth === depth ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 8,
-                  color: maxDepth === depth ? '#67e8f9' : 'rgba(255,255,255,0.5)',
+                  color: maxDepth === depth ? 'white' : 'rgba(255,255,255,0.5)',
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer'
@@ -900,7 +989,7 @@ function PathFinderPanel({
               style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#67e8f9', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase' }}>
                   Found {paths.length} path{paths.length !== 1 ? 's' : ''}
                 </span>
                 <div style={{ display: 'flex', gap: 6 }}>
@@ -910,10 +999,10 @@ function PathFinderPanel({
                     whileTap={{ scale: 0.95 }}
                     style={{
                       padding: '4px 10px',
-                      backgroundColor: 'rgba(6, 182, 212, 0.15)',
-                      border: '1px solid rgba(6, 182, 212, 0.3)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                       borderRadius: 6,
-                      color: '#67e8f9',
+                      color: 'rgba(255,255,255,0.7)',
                       fontSize: 10,
                       fontWeight: 600,
                       cursor: 'pointer'
@@ -959,8 +1048,8 @@ function PathFinderPanel({
                         width: '100%',
                         textAlign: 'left',
                         padding: '10px 12px',
-                        backgroundColor: isSelected ? 'rgba(6, 182, 212, 0.15)' : 'rgba(255,255,255,0.03)',
-                        border: isSelected ? '1px solid rgba(6, 182, 212, 0.4)' : '1px solid rgba(255,255,255,0.06)',
+                        backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255,255,255,0.03)',
+                        border: isSelected ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.06)',
                         borderRadius: 10,
                         cursor: 'pointer'
                       }}
@@ -968,7 +1057,7 @@ function PathFinderPanel({
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ marginTop: 2, flexShrink: 0 }}>
                           {isSelected ? (
-                            <CheckSquare size={14} color="#67e8f9" />
+                            <CheckSquare size={14} color="white" />
                           ) : (
                             <Square size={14} color="rgba(255,255,255,0.3)" />
                           )}
@@ -976,15 +1065,15 @@ function PathFinderPanel({
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {/* Header row with path number, hops, and exposure index */}
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: 11, fontWeight: 600, color: isSelected ? '#67e8f9' : 'white' }}>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: isSelected ? 'white' : 'rgba(255,255,255,0.8)' }}>
                               #{idx + 1}
                             </span>
                             <span style={{
                               padding: '1px 6px',
-                              backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
                               borderRadius: 3,
                               fontSize: 9,
-                              color: '#67e8f9'
+                              color: 'rgba(255,255,255,0.7)'
                             }}>
                               {path.length} hop{path.length !== 1 ? 's' : ''}
                             </span>
@@ -1011,9 +1100,9 @@ function PathFinderPanel({
                               <React.Fragment key={i}>
                                 <span style={{
                                   fontSize: 10,
-                                  color: i === 0 || i === nodeLabels.length - 1 ? '#67e8f9' : 'rgba(255,255,255,0.7)',
+                                  color: i === 0 || i === nodeLabels.length - 1 ? 'white' : 'rgba(255,255,255,0.7)',
                                   fontWeight: i === 0 || i === nodeLabels.length - 1 ? 600 : 400,
-                                  backgroundColor: i === 0 || i === nodeLabels.length - 1 ? 'rgba(6, 182, 212, 0.12)' : 'rgba(255,255,255,0.05)',
+                                  backgroundColor: i === 0 || i === nodeLabels.length - 1 ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255,255,255,0.05)',
                                   padding: '2px 5px',
                                   borderRadius: 3,
                                   maxWidth: 100,
@@ -1079,9 +1168,9 @@ function PathFinderPanel({
               flex: 1,
               padding: '12px 20px',
               background: fromSelected && toSelected && !isLoading 
-                ? 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' 
-                : 'rgba(255,255,255,0.1)',
-              border: 'none',
+                ? 'rgba(255, 255, 255, 0.15)' 
+                : 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: 10,
               color: 'white',
               fontSize: 13,
@@ -1306,11 +1395,11 @@ function CyclesPanel({
     <div
       style={{
         width: 380,
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        backgroundColor: '#1a1a1a',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(236, 72, 153, 0.2)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: 20,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
         overflow: 'hidden'
       }}
     >
@@ -1318,7 +1407,7 @@ function CyclesPanel({
       <div style={{
         padding: '16px 20px',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        background: 'linear-gradient(to right, rgba(236, 72, 153, 0.15), transparent)',
+        background: 'transparent',
         display: 'flex',
         alignItems: 'center',
         gap: 12
@@ -1327,12 +1416,12 @@ function CyclesPanel({
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: 'rgba(236, 72, 153, 0.25)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <RefreshCw size={18} color="#f9a8d4" />
+          <RefreshCw size={18} color="rgba(255,255,255,0.7)" />
         </div>
         <div>
           <h3 style={{ color: 'white', fontSize: 15, fontWeight: 600, margin: 0 }}>
@@ -1347,7 +1436,7 @@ function CyclesPanel({
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* Company Search */}
         <div>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#f9a8d4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Select Company
           </label>
           <div style={{ position: 'relative' }}>
@@ -1357,8 +1446,8 @@ function CyclesPanel({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '10px 14px',
-                backgroundColor: 'rgba(236, 72, 153, 0.15)',
-                border: '1px solid rgba(236, 72, 153, 0.3)',
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: 10
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1366,24 +1455,24 @@ function CyclesPanel({
                     width: 24,
                     height: 24,
                     borderRadius: 6,
-                    backgroundColor: 'rgba(236, 72, 153, 0.3)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <RefreshCw size={12} color="#f9a8d4" />
+                    <RefreshCw size={12} color="rgba(255,255,255,0.7)" />
                   </div>
                   <span style={{ color: 'white', fontSize: 13, fontWeight: 500 }}>{localSelectedNode.label}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  {isLoading && <Loader2 size={14} color="#f9a8d4" className="animate-spin" />}
+                  {isLoading && <Loader2 size={14} color="rgba(255,255,255,0.7)" className="animate-spin" />}
                   <motion.button 
                     onClick={handleClearNode}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
                   >
-                    <X size={14} color="#f9a8d4" />
+                    <X size={14} color="rgba(255,255,255,0.7)" />
                   </motion.button>
                 </div>
               </div>
@@ -1414,7 +1503,7 @@ function CyclesPanel({
                     left: 0,
                     right: 0,
                     marginTop: 6,
-                    backgroundColor: 'rgba(15, 23, 42, 0.98)',
+                    backgroundColor: '#1a1a1a',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: 10,
                     overflow: 'hidden',
@@ -1435,7 +1524,7 @@ function CyclesPanel({
                           borderBottom: '1px solid rgba(255,255,255,0.05)',
                           cursor: 'pointer'
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(236, 72, 153, 0.1)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                       >
                         {node.label}
@@ -1466,10 +1555,10 @@ function CyclesPanel({
                 style={{
                   flex: 1,
                   padding: '8px 0',
-                  backgroundColor: maxDepth === depth ? 'rgba(236, 72, 153, 0.25)' : 'rgba(255,255,255,0.04)',
-                  border: maxDepth === depth ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(255,255,255,0.08)',
+                  backgroundColor: maxDepth === depth ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255,255,255,0.04)',
+                  border: maxDepth === depth ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 8,
-                  color: maxDepth === depth ? '#f9a8d4' : 'rgba(255,255,255,0.5)',
+                  color: maxDepth === depth ? 'white' : 'rgba(255,255,255,0.5)',
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer'
@@ -1492,7 +1581,7 @@ function CyclesPanel({
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: '#f9a8d4', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase' }}>
                     {cycles.length} cycle{cycles.length !== 1 ? 's' : ''} found
                   </span>
                   {responseInfo?.capped && (
@@ -1508,10 +1597,10 @@ function CyclesPanel({
                     whileTap={{ scale: 0.95 }}
                     style={{
                       padding: '4px 10px',
-                      backgroundColor: 'rgba(236, 72, 153, 0.15)',
-                      border: '1px solid rgba(236, 72, 153, 0.3)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                       borderRadius: 6,
-                      color: '#f9a8d4',
+                      color: 'rgba(255,255,255,0.7)',
                       fontSize: 10,
                       fontWeight: 600,
                       cursor: 'pointer'
@@ -1554,8 +1643,8 @@ function CyclesPanel({
                         width: '100%',
                         textAlign: 'left',
                         padding: '10px 12px',
-                        backgroundColor: isSelected ? 'rgba(236, 72, 153, 0.15)' : 'rgba(255,255,255,0.03)',
-                        border: isSelected ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(255,255,255,0.06)',
+                        backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255,255,255,0.03)',
+                        border: isSelected ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.06)',
                         borderRadius: 10,
                         cursor: 'pointer'
                       }}
@@ -1563,7 +1652,7 @@ function CyclesPanel({
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ marginTop: 2, flexShrink: 0 }}>
                           {isSelected ? (
-                            <CheckSquare size={14} color="#f9a8d4" />
+                            <CheckSquare size={14} color="white" />
                           ) : (
                             <Square size={14} color="rgba(255,255,255,0.3)" />
                           )}
@@ -1571,15 +1660,15 @@ function CyclesPanel({
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {/* Header row with cycle number and length */}
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                            <span style={{ fontSize: 11, fontWeight: 600, color: isSelected ? '#f9a8d4' : 'white' }}>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: isSelected ? 'white' : 'rgba(255,255,255,0.8)' }}>
                               #{idx + 1}
                             </span>
                             <span style={{
                               padding: '1px 6px',
-                              backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
                               borderRadius: 3,
                               fontSize: 9,
-                              color: '#f9a8d4'
+                              color: 'rgba(255,255,255,0.7)'
                             }}>
                               {cycle.length} hop{cycle.length !== 1 ? 's' : ''}
                             </span>
@@ -1595,9 +1684,9 @@ function CyclesPanel({
                               <React.Fragment key={i}>
                                 <span style={{
                                   fontSize: 10,
-                                  color: i === 0 || i === nodeLabels.length - 1 ? '#f9a8d4' : 'rgba(255,255,255,0.7)',
+                                  color: i === 0 || i === nodeLabels.length - 1 ? 'white' : 'rgba(255,255,255,0.7)',
                                   fontWeight: i === 0 || i === nodeLabels.length - 1 ? 600 : 400,
-                                  backgroundColor: i === 0 || i === nodeLabels.length - 1 ? 'rgba(236, 72, 153, 0.12)' : 'rgba(255,255,255,0.05)',
+                                  backgroundColor: i === 0 || i === nodeLabels.length - 1 ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255,255,255,0.05)',
                                   padding: '2px 5px',
                                   borderRadius: 3,
                                   maxWidth: 90,

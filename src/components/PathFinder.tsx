@@ -216,35 +216,34 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
         left: 24,
         width: 340,
         maxHeight: isCollapsed ? 'auto' : '55vh',
-        backgroundColor: '#0f172a',
-        borderTop: '3px solid #8b5cf6',
+        backgroundColor: '#1a1a1a',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
         borderRight: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '24px 24px 0 0',
         zIndex: 9997,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 -10px 40px rgba(0,0,0,0.5)'
       }}
     >
       {/* Drag Handle */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 6px' }}>
-        <div style={{ width: 40, height: 5, backgroundColor: '#475569', borderRadius: 3 }} />
+        <div style={{ width: 40, height: 5, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }} />
       </div>
 
       {/* Header */}
       <div style={{ 
         padding: '12px 20px 16px', 
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        background: 'linear-gradient(to right, rgba(139, 92, 246, 0.15), transparent)'
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'transparent'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ 
               padding: 8, 
-              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-              borderRadius: 10,
-              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 10
             }}>
               <Route color="white" size={16} />
             </div>
@@ -318,8 +317,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     style={{
-                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.1))',
-                      border: '1px solid rgba(139, 92, 246, 0.4)',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                       borderRadius: 10,
                       padding: '8px 12px',
                       display: 'flex',
@@ -328,7 +327,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <CheckCircle2 color="#a78bfa" size={14} />
+                      <CheckCircle2 color="rgba(255,255,255,0.7)" size={14} />
                       <span style={{ color: 'white', fontSize: 12, fontWeight: 500 }}>{fromSelected.label}</span>
                     </div>
                     <button
@@ -345,8 +344,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                       alignItems: 'center',
                       gap: 8,
                       padding: '8px 10px',
-                      backgroundColor: '#1e293b',
-                      border: isFromFocused ? '1px solid #8b5cf6' : '1px solid rgba(255,255,255,0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: isFromFocused ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)',
                       borderRadius: 10
                     }}>
                       <Search color="#64748b" size={14} />
@@ -394,11 +393,11 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 8,
-                                background: idx === fromSelectedIndex ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
+                                background: idx === fromSelectedIndex ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
                                 borderBottom: '1px solid rgba(255,255,255,0.05)'
                               }}
                             >
-                              <Building2 color={idx === fromSelectedIndex ? '#c4b5fd' : '#64748b'} size={12} />
+                              <Building2 color={idx === fromSelectedIndex ? 'white' : '#64748b'} size={12} />
                               <span style={{ color: idx === fromSelectedIndex ? 'white' : '#e2e8f0', fontSize: 12 }}>{node.label}</span>
                             </button>
                           )) : (
@@ -426,8 +425,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     style={{
-                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.1))',
-                      border: '1px solid rgba(139, 92, 246, 0.4)',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                       borderRadius: 10,
                       padding: '8px 12px',
                       display: 'flex',
@@ -436,7 +435,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <CheckCircle2 color="#a78bfa" size={14} />
+                      <CheckCircle2 color="rgba(255,255,255,0.7)" size={14} />
                       <span style={{ color: 'white', fontSize: 12, fontWeight: 500 }}>{toSelected.label}</span>
                     </div>
                     <button
@@ -453,8 +452,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                       alignItems: 'center',
                       gap: 8,
                       padding: '8px 10px',
-                      backgroundColor: '#1e293b',
-                      border: isToFocused ? '1px solid #8b5cf6' : '1px solid rgba(255,255,255,0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: isToFocused ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)',
                       borderRadius: 10
                     }}>
                       <Search color="#64748b" size={14} />
@@ -481,8 +480,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                             left: 0,
                             right: 0,
                             marginTop: 4,
-                            backgroundColor: '#0f172a',
-                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            backgroundColor: '#1a1a1a',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
                             borderRadius: 8,
                             boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                             overflow: 'hidden',
@@ -502,11 +501,11 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 8,
-                                background: idx === toSelectedIndex ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
+                                background: idx === toSelectedIndex ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
                                 borderBottom: '1px solid rgba(255,255,255,0.05)'
                               }}
                             >
-                              <Building2 color={idx === toSelectedIndex ? '#c4b5fd' : '#64748b'} size={12} />
+                              <Building2 color={idx === toSelectedIndex ? 'white' : '#64748b'} size={12} />
                               <span style={{ color: idx === toSelectedIndex ? 'white' : '#e2e8f0', fontSize: 12 }}>{node.label}</span>
                             </button>
                           )) : (
@@ -530,8 +529,8 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                   style={{
                     width: '100%',
                     padding: '8px 10px',
-                    backgroundColor: '#1e293b',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
                     borderRadius: 10,
                     fontSize: 12,
                     color: 'white',
@@ -540,7 +539,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                   }}
                 >
                   {[2, 3, 4, 5, 6].map(d => (
-                    <option key={d} value={d} style={{ backgroundColor: '#1e293b' }}>{d} hops</option>
+                    <option key={d} value={d} style={{ backgroundColor: '#1a1a1a' }}>{d} hops</option>
                   ))}
                 </select>
               </div>
@@ -558,7 +557,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                       <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>
                         {paths.length} path{paths.length !== 1 ? 's' : ''} found
                       </span>
-                      <span style={{ fontSize: 10, color: '#a78bfa' }}>
+                      <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)' }}>
                         {selectedPathIds.size} selected
                       </span>
                     </div>
@@ -577,15 +576,15 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                               textAlign: 'left',
                               padding: 10,
                               borderRadius: 8,
-                              border: isSelected ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid rgba(255,255,255,0.1)',
-                              background: isSelected ? 'rgba(139, 92, 246, 0.15)' : 'rgba(30, 41, 59, 0.4)',
+                              border: isSelected ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)',
+                              background: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.03)',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'flex-start',
                               gap: 8
                             }}
                           >
-                            {isSelected ? <CheckSquare color="#a78bfa" size={14} /> : <Square color="#64748b" size={14} />}
+                            {isSelected ? <CheckSquare color="white" size={14} /> : <Square color="#64748b" size={14} />}
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                                 <span style={{ color: 'white', fontSize: 11, fontWeight: 500 }}>#{idx + 1}</span>
@@ -631,7 +630,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
             <div style={{ 
               padding: '12px 16px 16px',
               borderTop: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(15, 23, 42, 0.5)',
+              background: 'transparent',
               display: 'flex',
               gap: 8
             }}>
@@ -644,10 +643,10 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                   flex: 1,
                   padding: '10px 14px',
                   borderRadius: 10,
-                  border: 'none',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                   background: fromSelected && toSelected && !isLoading 
-                    ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
-                    : 'rgba(100, 116, 139, 0.3)',
+                    ? 'rgba(255, 255, 255, 0.15)'
+                    : 'rgba(255, 255, 255, 0.05)',
                   color: 'white',
                   fontSize: 12,
                   fontWeight: 500,
@@ -655,10 +654,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 6,
-                  boxShadow: fromSelected && toSelected && !isLoading 
-                    ? '0 4px 12px rgba(139, 92, 246, 0.4)'
-                    : 'none'
+                  gap: 6
                 }}
               >
                 {isLoading ? (
@@ -681,7 +677,7 @@ export default function PathFinder({ nodes, onPathFound }: PathFinderProps) {
                   padding: '10px 14px',
                   borderRadius: 10,
                   border: '1px solid rgba(255,255,255,0.1)',
-                  background: '#1e293b',
+                  background: 'rgba(255, 255, 255, 0.05)',
                   color: '#e2e8f0',
                   fontSize: 12,
                   fontWeight: 500,

@@ -448,8 +448,8 @@ export default function Chatbot({
         right: 24,
         width: 380,
         maxHeight: isCollapsed ? 'auto' : '60vh',
-        backgroundColor: '#0f172a',
-        borderTop: '3px solid #8b5cf6',
+        backgroundColor: '#1a1a1a',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
         borderLeft: '1px solid rgba(255,255,255,0.1)',
         borderRight: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '24px 24px 0 0',
@@ -457,27 +457,26 @@ export default function Chatbot({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 -10px 40px rgba(0,0,0,0.5)'
       }}
     >
       {/* Drag Handle */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 6px' }}>
-        <div style={{ width: 40, height: 5, backgroundColor: '#475569', borderRadius: 3 }} />
+        <div style={{ width: 40, height: 5, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }} />
       </div>
 
       {/* Header */}
       <div style={{ 
         padding: '12px 20px 16px', 
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        background: 'linear-gradient(to right, rgba(139, 92, 246, 0.15), transparent)'
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'transparent'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ 
               padding: 8, 
-              background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-              borderRadius: 10,
-              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 10
             }}>
               <Sparkles color="white" size={16} />
             </div>
@@ -558,15 +557,15 @@ export default function Chatbot({
                         width: 24,
                         height: 24,
                         borderRadius: 6,
-                        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.2))',
-                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginRight: 8,
                         flexShrink: 0
                       }}>
-                        <Sparkles color="#a78bfa" size={12} />
+                        <Sparkles color="rgba(255,255,255,0.8)" size={12} />
                       </div>
                     )}
                     <div style={{ 
@@ -576,13 +575,10 @@ export default function Chatbot({
                       fontSize: 13,
                       lineHeight: 1.5,
                       background: msg.role === 'user' 
-                        ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
-                        : 'rgba(30, 41, 59, 0.8)',
+                        ? 'rgba(255, 255, 255, 0.15)'
+                        : 'rgba(255, 255, 255, 0.05)',
                       color: msg.role === 'user' ? 'white' : '#e2e8f0',
-                      border: msg.role === 'user' ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                      boxShadow: msg.role === 'user' 
-                        ? '0 4px 12px rgba(139, 92, 246, 0.3)'
-                        : 'none'
+                      border: '1px solid rgba(255,255,255,0.08)'
                     }}>
                       {msg.content}
                     </div>
@@ -602,29 +598,29 @@ export default function Chatbot({
                         marginRight: 8
                       }}
                     >
-                      {msg.suggestions.map((suggestion, sIdx) => (
-                        <motion.button
-                          key={sIdx}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          whileHover={{ scale: 1.01, backgroundColor: 'rgba(139, 92, 246, 0.25)' }}
-                          whileTap={{ scale: 0.99 }}
-                          style={{
-                            padding: '8px 12px',
-                            fontSize: 11,
-                            color: '#c4b5fd',
-                            background: 'rgba(139, 92, 246, 0.12)',
-                            border: '1px solid rgba(139, 92, 246, 0.3)',
-                            borderRadius: 10,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            textAlign: 'left',
-                            lineHeight: 1.4,
-                            width: 'fit-content'
-                          }}
-                        >
-                          {suggestion}
-                        </motion.button>
-                      ))}
+                        {msg.suggestions.map((suggestion, sIdx) => (
+                          <motion.button
+                            key={sIdx}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.12)' }}
+                            whileTap={{ scale: 0.99 }}
+                            style={{
+                              padding: '8px 12px',
+                              fontSize: 11,
+                              color: 'rgba(255, 255, 255, 0.7)',
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.1)',
+                              borderRadius: 10,
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              textAlign: 'left',
+                              lineHeight: 1.4,
+                              width: 'fit-content'
+                            }}
+                          >
+                            {suggestion}
+                          </motion.button>
+                        ))}
                     </motion.div>
                   )}
                 </React.Fragment>
@@ -639,37 +635,37 @@ export default function Chatbot({
                     width: 24,
                     height: 24,
                     borderRadius: 6,
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.2))',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginRight: 8,
                     flexShrink: 0
                   }}>
-                    <Sparkles color="#a78bfa" size={12} />
+                    <Sparkles color="rgba(255,255,255,0.8)" size={12} />
                   </div>
                   <div style={{
                     padding: '12px 16px',
                     borderRadius: '14px 14px 14px 4px',
-                    background: 'rgba(30, 41, 59, 0.8)',
+                    background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255,255,255,0.08)'
                   }}>
                     <span style={{ display: 'flex', gap: 5 }}>
                       <motion.span 
                         animate={{ y: [0, -4, 0] }}
                         transition={{ repeat: Infinity, duration: 0.6, delay: 0 }}
-                        style={{ width: 6, height: 6, backgroundColor: '#a78bfa', borderRadius: '50%' }}
+                        style={{ width: 6, height: 6, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '50%' }}
                       />
                       <motion.span 
                         animate={{ y: [0, -4, 0] }}
                         transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }}
-                        style={{ width: 6, height: 6, backgroundColor: '#a78bfa', borderRadius: '50%' }}
+                        style={{ width: 6, height: 6, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '50%' }}
                       />
                       <motion.span 
                         animate={{ y: [0, -4, 0] }}
                         transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }}
-                        style={{ width: 6, height: 6, backgroundColor: '#a78bfa', borderRadius: '50%' }}
+                        style={{ width: 6, height: 6, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '50%' }}
                       />
                     </span>
                   </div>
@@ -682,14 +678,14 @@ export default function Chatbot({
             <div style={{ 
               padding: '12px 16px 16px',
               borderTop: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(15, 23, 42, 0.5)'
+              background: 'transparent'
             }}>
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: 10,
                 padding: '10px 12px',
-                backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: 12
               }}>
@@ -719,16 +715,13 @@ export default function Chatbot({
                     height: 32,
                     borderRadius: 8,
                     background: input.trim() && !isLoading 
-                      ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
-                      : 'rgba(100, 116, 139, 0.3)',
-                    border: 'none',
+                      ? 'rgba(255, 255, 255, 0.15)'
+                      : 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     cursor: input.trim() && !isLoading ? 'pointer' : 'not-allowed',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: input.trim() && !isLoading 
-                      ? '0 4px 12px rgba(139, 92, 246, 0.4)'
-                      : 'none',
                     transition: 'all 0.2s'
                   }}
                 >

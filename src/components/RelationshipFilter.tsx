@@ -27,35 +27,34 @@ export default function RelationshipFilter({ enabledTypes, onToggle, onToggleAll
         left: 388,
         width: 280,
         maxHeight: isCollapsed ? 'auto' : '50vh',
-        backgroundColor: '#0f172a',
-        borderTop: '3px solid #8b5cf6',
+        backgroundColor: '#1a1a1a',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
         borderRight: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '24px 24px 0 0',
         zIndex: 9996,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 -10px 40px rgba(0,0,0,0.5)'
       }}
     >
       {/* Drag Handle */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 6px' }}>
-        <div style={{ width: 40, height: 5, backgroundColor: '#475569', borderRadius: 3 }} />
+        <div style={{ width: 40, height: 5, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }} />
       </div>
 
       {/* Header */}
       <div style={{ 
         padding: '12px 20px 16px', 
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        background: 'linear-gradient(to right, rgba(139, 92, 246, 0.15), transparent)'
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'transparent'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ 
               padding: 8, 
-              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-              borderRadius: 10,
-              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 10
             }}>
               <Filter color="white" size={16} />
             </div>
@@ -111,9 +110,9 @@ export default function RelationshipFilter({ enabledTypes, onToggle, onToggleAll
                   width: '100%',
                   padding: '8px 12px',
                   borderRadius: 8,
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
-                  background: 'rgba(139, 92, 246, 0.1)',
-                  color: '#a78bfa',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  color: 'rgba(255,255,255,0.7)',
                   fontSize: 11,
                   fontWeight: 500,
                   cursor: 'pointer'
@@ -154,7 +153,7 @@ export default function RelationshipFilter({ enabledTypes, onToggle, onToggleAll
                       borderRadius: 8,
                       border: 'none',
                       cursor: 'pointer',
-                      background: isEnabled ? 'rgba(139, 92, 246, 0.1)' : 'transparent'
+                      background: isEnabled ? 'rgba(255, 255, 255, 0.08)' : 'transparent'
                     }}
                   >
                     {/* Color Indicator */}
@@ -179,7 +178,7 @@ export default function RelationshipFilter({ enabledTypes, onToggle, onToggleAll
 
                     {/* Toggle Icon */}
                     {isEnabled ? (
-                      <Eye color="#a78bfa" size={14} />
+                      <Eye color="rgba(255,255,255,0.7)" size={14} />
                     ) : (
                       <EyeOff color="#475569" size={14} />
                     )}

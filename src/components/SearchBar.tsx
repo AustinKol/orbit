@@ -69,12 +69,10 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         style={{
           position: 'relative',
-          backgroundColor: '#0f172a',
+          backgroundColor: '#1a1a1a',
           borderRadius: 16,
-          border: isFocused ? '2px solid #8b5cf6' : '2px solid rgba(255,255,255,0.1)',
-          boxShadow: isFocused 
-            ? '0 8px 32px rgba(139, 92, 246, 0.3), 0 0 0 1px rgba(139, 92, 246, 0.1)' 
-            : '0 8px 32px rgba(0,0,0,0.4)',
+          border: isFocused ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
           transition: 'all 0.2s ease'
         }}
       >
@@ -86,13 +84,13 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
         }}>
           <div style={{
             padding: 8,
-            backgroundColor: isFocused ? 'rgba(139, 92, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
             borderRadius: 8,
             transition: 'all 0.2s ease'
           }}>
             <Search 
               size={18} 
-              color={isFocused ? '#a78bfa' : '#64748b'}
+              color={isFocused ? 'white' : '#64748b'}
               style={{ transition: 'color 0.2s ease' }}
             />
           </div>
@@ -120,11 +118,11 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
               animate={{ opacity: 1, scale: 1 }}
               style={{
                 padding: '4px 10px',
-                backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: 6,
                 fontSize: 11,
-                color: '#c4b5fd'
+                color: 'rgba(255,255,255,0.6)'
               }}
             >
               {results.length} found
@@ -146,10 +144,10 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
               left: 0,
               right: 0,
               marginTop: 8,
-              backgroundColor: '#0f172a',
-              border: '2px solid rgba(139, 92, 246, 0.3)',
+              backgroundColor: '#1a1a1a',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: 16,
-              boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.1)',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
               overflow: 'hidden'
             }}
           >
@@ -173,7 +171,7 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       background: idx === selectedIndex 
-                        ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.1))'
+                        ? 'rgba(255, 255, 255, 0.1)'
                         : 'transparent',
                       transition: 'all 0.15s ease'
                     }}
@@ -194,8 +192,8 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
                         height: 28,
                         borderRadius: 6,
                         background: idx === selectedIndex 
-                          ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(168, 85, 247, 0.3))'
-                          : 'rgba(30, 41, 59, 0.8)',
+                          ? 'rgba(255, 255, 255, 0.15)'
+                          : 'rgba(255, 255, 255, 0.08)',
                         border: '1px solid rgba(255,255,255,0.1)',
                         display: 'flex',
                         alignItems: 'center',
@@ -203,7 +201,7 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
                       }}>
                         <Building2 
                           size={14} 
-                          color={idx === selectedIndex ? '#c4b5fd' : '#64748b'}
+                          color={idx === selectedIndex ? 'white' : '#64748b'}
                         />
                       </div>
                       <span style={{ 
@@ -217,12 +215,12 @@ export default function SearchBar({ nodes, onSelect }: SearchBarProps) {
                     <span style={{
                       padding: '3px 8px',
                       backgroundColor: idx === selectedIndex 
-                        ? 'rgba(139, 92, 246, 0.3)'
-                        : 'rgba(30, 41, 59, 0.8)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                        ? 'rgba(255, 255, 255, 0.15)'
+                        : 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255,255,255,0.08)',
                       borderRadius: 4,
                       fontSize: 10,
-                      color: idx === selectedIndex ? '#c4b5fd' : '#94a3b8',
+                      color: idx === selectedIndex ? 'white' : '#94a3b8',
                       textTransform: 'uppercase',
                       letterSpacing: 0.5
                     }}>

@@ -357,8 +357,8 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
           width: '100%',
           maxWidth: '900px',
           maxHeight: isCollapsed ? 'auto' : '70vh',
-          backgroundColor: '#0f172a',
-          borderTop: '3px solid #8b5cf6',
+          backgroundColor: '#1a1a1a',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
           borderRadius: '24px 24px 0 0',
           zIndex: 9999,
           display: 'flex',
@@ -370,24 +370,24 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
         {/* Drag Handle */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 8px' }}>
           <motion.div 
-            style={{ width: 48, height: 6, backgroundColor: '#475569', borderRadius: 3 }}
+            style={{ width: 48, height: 6, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }}
           />
         </div>
 
         {/* Header */}
         <div style={{ 
           padding: '16px 24px', 
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), transparent)'
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          background: 'transparent'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <motion.div 
                 style={{ 
                   padding: 10, 
-                  backgroundColor: 'rgba(139, 92, 246, 0.3)', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)', 
                   borderRadius: 12,
-                  border: '1px solid rgba(255,255,255,0.1)'
+                  border: '1px solid rgba(255,255,255,0.08)'
                 }}
               >
                 <Link2 color="white" size={20} />
@@ -501,7 +501,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                     flexWrap: 'wrap', 
                     gap: 8,
                     padding: '12px 16px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
                     borderRadius: 12,
                     border: '1px solid rgba(255,255,255,0.08)'
                   }}>
@@ -562,13 +562,13 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                   transition={{ delay: 0.1 }}
                   style={{ 
                     padding: 20, 
-                    backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.1)'
+                    border: '1px solid rgba(255,255,255,0.08)'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <FileText color="#a78bfa" size={16} />
+                    <FileText color="rgba(255,255,255,0.6)" size={16} />
                     <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                       Summary
                     </span>
@@ -588,7 +588,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                       transition={{ delay: 0.15 }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                        <DollarSign color="#a78bfa" size={16} />
+                        <DollarSign color="rgba(255,255,255,0.6)" size={16} />
                         <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                           Financial Details
                         </span>
@@ -602,8 +602,8 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                               alignItems: 'center', 
                               justifyContent: 'space-between',
                               padding: 14,
-                              backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                              border: '1px solid rgba(139, 92, 246, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
                               borderRadius: 10
                             }}
                           >
@@ -612,11 +612,11 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                                 width: 32, 
                                 height: 32, 
                                 borderRadius: 8, 
-                                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#c4b5fd'
+                                color: 'rgba(255,255,255,0.7)'
                               }}>
                                 {item.icon}
                               </div>
@@ -637,13 +637,13 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                       transition={{ delay: 0.2 }}
                       style={{ 
                         padding: 16,
-                        backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
                         borderRadius: 12,
-                        border: '1px solid rgba(255,255,255,0.1)'
+                        border: '1px solid rgba(255,255,255,0.08)'
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                        <PieChartIcon color="#a78bfa" size={16} />
+                        <PieChartIcon color="rgba(255,255,255,0.6)" size={16} />
                         <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
                           Distribution
                         </span>
@@ -667,8 +667,8 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                           <Tooltip 
                             formatter={(value, name, props) => [`${value}%`, props.payload?.name || 'Share']}
                             contentStyle={{ 
-                              backgroundColor: 'rgba(15, 23, 42, 0.98)', 
-                              border: '1px solid rgba(139, 92, 246, 0.3)', 
+                              backgroundColor: '#1a1a1a', 
+                              border: '1px solid rgba(255, 255, 255, 0.1)', 
                               borderRadius: '10px', 
                               fontSize: '13px',
                               padding: '10px 14px',
@@ -701,18 +701,18 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                     transition={{ delay: 0.25 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <FileText color="#a78bfa" size={18} />
+                      <FileText color="rgba(255,255,255,0.6)" size={18} />
                       <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
                         SEC Filings
                       </span>
                       <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, rgba(255,255,255,0.1), transparent)' }} />
                       <span style={{ 
                         padding: '4px 12px',
-                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: 20,
                         fontSize: 12,
-                        color: '#c4b5fd'
+                        color: 'rgba(255,255,255,0.6)'
                       }}>
                         {relationshipData.secFilings.length}
                       </span>
@@ -726,19 +726,19 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                           transition={{ delay: 0.3 + idx * 0.05 }}
                           style={{ 
                             padding: 14,
-                            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
                             borderRadius: 10
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                             <span style={{ 
                               padding: '4px 8px',
-                              backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.08)',
                               borderRadius: 6,
                               fontSize: 11,
                               fontFamily: 'monospace',
-                              color: '#c4b5fd'
+                              color: 'rgba(255,255,255,0.7)'
                             }}>
                               {filing.type}
                             </span>
@@ -759,7 +759,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                     transition={{ delay: 0.3 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <Newspaper color="#a78bfa" size={18} />
+                      <Newspaper color="rgba(255,255,255,0.6)" size={18} />
                       <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
                         Related News
                       </span>
@@ -774,14 +774,14 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                           transition={{ delay: 0.35 + idx * 0.05 }}
                           style={{ 
                             padding: 14,
-                            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
                             borderRadius: 10
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                             <span style={{ fontSize: 11, color: '#64748b' }}>{article.date}</span>
-                            <span style={{ fontSize: 11, color: '#a78bfa' }}>{article.source}</span>
+                            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{article.source}</span>
                           </div>
                           <h4 style={{ color: 'white', fontSize: 14, fontWeight: 500, margin: 0, lineHeight: 1.4 }}>
                             {article.title}
@@ -800,7 +800,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                     transition={{ delay: 0.35 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <Package color="#a78bfa" size={18} />
+                      <Package color="rgba(255,255,255,0.6)" size={18} />
                       <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
                         Supply Chain
                       </span>
@@ -825,8 +825,8 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                         {relationshipData.supplyChainInfo.locations.map((loc, idx) => (
                           <span key={idx} style={{ 
                             padding: '6px 12px',
-                            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
                             borderRadius: 8,
                             fontSize: 12,
                             color: '#94a3b8'
@@ -847,7 +847,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                     transition={{ delay: 0.35 }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <Handshake color="#a78bfa" size={18} />
+                      <Handshake color="rgba(255,255,255,0.6)" size={18} />
                       <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
                         Partnership Details
                       </span>
@@ -860,8 +860,8 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                             key={idx} 
                             style={{ 
                               padding: 12,
-                              backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                              border: '1px solid rgba(255,255,255,0.1)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255,255,255,0.08)',
                               borderRadius: 10
                             }}
                           >
@@ -875,7 +875,7 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                               }}>
                                 {project.status}
                               </span>
-                              <span style={{ fontSize: 12, fontWeight: 600, color: '#c4b5fd' }}>{project.value}</span>
+                              <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>{project.value}</span>
                             </div>
                             <p style={{ color: '#e2e8f0', fontSize: 13, margin: 0 }}>{project.name}</p>
                           </div>
@@ -888,11 +888,11 @@ export default function RelationshipCard({ edge, sourceNode, targetNode, allRela
                         {relationshipData.partnershipInfo.collaboration.slice(0, 5).map((area, idx) => (
                           <span key={idx} style={{ 
                             padding: '6px 12px',
-                            backgroundColor: 'rgba(139, 92, 246, 0.15)',
-                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
                             borderRadius: 8,
                             fontSize: 12,
-                            color: '#c4b5fd'
+                            color: 'rgba(255,255,255,0.7)'
                           }}>
                             {area}
                           </span>

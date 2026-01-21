@@ -79,31 +79,31 @@ export default function WatchlistPopup({
           right: 24,
           width: 400,
           maxHeight: isCollapsed ? 'auto' : '80vh',
-          backgroundColor: '#0f172a',
-          border: '1px solid rgba(251, 191, 36, 0.3)',
+          backgroundColor: '#1a1a1a',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: 20,
           zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          boxShadow: '0 10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(251, 191, 36, 0.1)'
+          boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
         }}
       >
 
         {/* Header */}
         <div style={{ 
           padding: '16px 20px', 
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          background: 'linear-gradient(to bottom, rgba(251, 191, 36, 0.1), transparent)'
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          background: 'transparent'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <motion.div 
                 style={{ 
                   padding: 10, 
-                  backgroundColor: 'rgba(251, 191, 36, 0.25)', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)', 
                   borderRadius: 12,
-                  border: '1px solid rgba(255,255,255,0.1)'
+                  border: '1px solid rgba(255,255,255,0.08)'
                 }}
               >
                 <Star color="#fbbf24" size={20} fill="#fbbf24" />
@@ -115,11 +115,11 @@ export default function WatchlistPopup({
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                   <span style={{ 
                     padding: '4px 10px', 
-                    backgroundColor: 'rgba(251, 191, 36, 0.25)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     borderRadius: 20,
                     fontSize: 12,
-                    color: 'rgba(255,255,255,0.9)',
-                    border: '1px solid rgba(255,255,255,0.1)'
+                    color: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(255,255,255,0.08)'
                   }}>
                     {watchlist.size} stocks
                   </span>
@@ -243,9 +243,9 @@ export default function WatchlistPopup({
                     alignItems: 'center', 
                     gap: 12,
                     padding: '14px 16px',
-                    backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: 12,
-                    border: isSearchFocused ? '1px solid rgba(251, 191, 36, 0.4)' : '1px solid rgba(255,255,255,0.1)'
+                    border: isSearchFocused ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255,255,255,0.08)'
                   }}>
                     <Search color="#94a3b8" size={18} />
                     <input
@@ -296,7 +296,7 @@ export default function WatchlistPopup({
                           left: 0,
                           right: 0,
                           marginTop: 8,
-                          backgroundColor: 'rgba(15, 23, 42, 0.98)',
+                          backgroundColor: '#1a1a1a',
                           border: '1px solid rgba(255,255,255,0.1)',
                           borderRadius: 12,
                           overflow: 'hidden',
@@ -326,7 +326,7 @@ export default function WatchlistPopup({
                               textAlign: 'left'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = 'rgba(251, 191, 36, 0.1)';
+                              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.backgroundColor = 'transparent';
@@ -364,11 +364,11 @@ export default function WatchlistPopup({
                     <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, rgba(255,255,255,0.1), transparent)' }} />
                     <span style={{ 
                       padding: '4px 12px',
-                      backgroundColor: 'rgba(251, 191, 36, 0.2)',
-                      border: '1px solid rgba(251, 191, 36, 0.3)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                       borderRadius: 20,
                       fontSize: 12,
-                      color: '#fef08a'
+                      color: 'rgba(255, 255, 255, 0.7)'
                     }}>
                       {watchlist.size}
                     </span>
@@ -403,8 +403,8 @@ export default function WatchlistPopup({
                           transition={{ delay: 0.1 + idx * 0.03 }}
                           style={{ 
                             padding: 14,
-                            backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                            border: '1px solid rgba(251, 191, 36, 0.2)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
                             borderRadius: 12,
                             display: 'flex',
                             alignItems: 'center',

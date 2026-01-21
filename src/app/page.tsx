@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import GraphViz from '@/components/GraphViz';
-import SearchBar from '@/components/SearchBar';
 import Chatbot from '@/components/Chatbot';
 import TradingCard from '@/components/TradingCard';
 import RelationshipCard from '@/components/RelationshipCard';
@@ -327,8 +326,6 @@ export default function Home() {
       </div>
 
       {/* UI Layer */}
-      <SearchBar nodes={graphData.nodes} onSelect={handleSearchSelect} />
-      
       <ToolsNavbar 
         nodes={graphData.nodes}
         enabledTypes={enabledEdgeTypes}
@@ -341,6 +338,7 @@ export default function Home() {
         onCycleModeToggle={handleCycleModeToggle}
         onCyclesFound={handleCyclesFound}
         selectedNodeId={selectedNode?.id}
+        onSearchSelect={handleSearchSelect}
       />
       
       <Chatbot 
