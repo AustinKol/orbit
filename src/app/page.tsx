@@ -18,6 +18,7 @@ const WATCHLIST_STORAGE_KEY = 'orbit-watchlist';
 
 export default function Home() {
   const [graphData, setGraphData] = useState<GraphData>({ nodes: [], links: [] });
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [selectedEdge, setSelectedEdge] = useState<{ edge: GraphEdge; source: GraphNode; target: GraphNode } | null>(null);
   const [allRelationships, setAllRelationships] = useState<Array<{ edge: GraphEdge; source: GraphNode; target: GraphNode }>>([]);
@@ -59,10 +60,17 @@ export default function Home() {
 
   // Load data
   useEffect(() => {
+    setIsLoading(true);
     fetch('/api/graph')
       .then(res => res.json())
-      .then(data => setGraphData(data))
-      .catch(error => console.error("Failed to fetch graph data:", error));
+      .then(data => {
+        setGraphData(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Failed to fetch graph data:", error);
+        setIsLoading(false);
+      });
   }, []);
 
   const clearSelection = useCallback(() => {
@@ -307,6 +315,75 @@ export default function Home() {
       {/* Background Gradient - Deep space nebula */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-950/20 via-[#000011] to-[#000011] pointer-events-none z-0" />
 
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#000011',
+          }}
+        >
+          <div 
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 24,
+            }}
+          >
+            {/* Loading Bar Container */}
+            <div 
+              style={{
+                position: 'relative',
+                width: 256,
+                height: 6,
+                backgroundColor: '#000022',
+                borderRadius: 9999,
+                overflow: 'hidden',
+              }}
+            >
+              {/* Animated Loading Bar */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  height: '100%',
+                  width: '40%',
+                  backgroundColor: '#8b5cf6',
+                  borderRadius: 9999,
+                  animation: 'loading-slide 1.2s ease-in-out infinite',
+                }}
+              />
+            </div>
+            {/* Loading Text */}
+            <p 
+              style={{
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontSize: 14,
+                fontWeight: 300,
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                margin: 0,
+              }}
+            >
+              Loading Constellations
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Content Wrapper - dims when loading */}
+      <div className={`absolute inset-0 transition-opacity duration-300 ${isLoading ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
+
       {/* Graph Layer */}
       <div className="absolute inset-0 z-0">
         <GraphViz 
@@ -399,6 +476,8 @@ export default function Home() {
           ORBIT
         </h1>
       </div>
+
+      </div>{/* End Content Wrapper */}
     </main>
   );
 }

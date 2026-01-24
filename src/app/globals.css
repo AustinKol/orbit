@@ -108,3 +108,16 @@ div[style*="cursor: default"] {
 *:focus-visible {
   outline: none;
 }
+
+/* Loading bar animation */
+@keyframes loading-slide {
+  0% {
+    left: -40%;
+  }
+  50% {
+    left: 60%;
+  }
+  100% {
+    left: 100%;
+  }
+}

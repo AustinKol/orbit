@@ -8,7 +8,6 @@ import * as THREE from 'three';
 
 const ForceGraph3D = dynamic(() => import('react-force-graph-3d'), {
   ssr: false,
-  loading: () => <div className="flex items-center justify-center h-full text-slate-500 animate-pulse">Loading Constellations...</div>
 });
 
 interface Props {
@@ -891,7 +890,7 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full" style={{ backgroundColor: '#000008' }}>
       {/* @ts-ignore */}
       <ForceGraph3D
         ref={fgRef}
