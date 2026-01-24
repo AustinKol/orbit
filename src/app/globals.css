@@ -7,10 +7,47 @@
   --foreground: #f8fafc;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  overflow: hidden; /* Prevent scroll on the main page */
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+/* Remove blue focus outlines globally */
+*:focus, *:focus-visible {
+  outline: none !important;
+}
+
+/* Ensure no borders on root containers */
+#__next, main, .relative {
+  border: none;
+  outline: none;
+}
+
+/* Fix for any unexpected left borders */
+html, body, #__next, main, div[class*="absolute inset-0"] {
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Override Tailwind's default border color which can cause ghost borders */
+@layer base {
+  *, ::before, ::after {
+    border-color: rgba(0, 0, 0, 0);
+  }
 }
 
 /* Reset form elements to inherit dark theme */
@@ -55,4 +92,19 @@ select option {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* Remove focus outlines on draggable elements */
+[data-framer-component-type],
+div[style*="cursor: grab"],
+div[style*="cursor: default"] {
+  outline: none !important;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: none;
 }

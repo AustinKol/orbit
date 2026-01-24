@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Sliders, GitBranch, Search, X, ArrowRight, CheckCircle2, Loader2, AlertCircle, CheckSquare, Square, Info, Star, Sparkles, Route, RefreshCw, Building2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Sliders, GitBranch, Search, X, ArrowRight, CheckCircle2, Loader2, AlertCircle, CheckSquare, Square, Info, Star, Sparkles, Route, RefreshCw, Building2, GripVertical } from 'lucide-react';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { GraphNode, EdgeType, PathItem, PathsResponse, CycleResultWithEdges, CyclesResponse } from '@/types';
 
 interface ToolsNavbarProps {
@@ -39,6 +39,7 @@ export default function ToolsNavbar({
   onSearchSelect
 }: ToolsNavbarProps) {
   const [activeTool, setActiveTool] = useState<ActiveTool>(null);
+  const dragControls = useDragControls();
   
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -106,17 +107,29 @@ export default function ToolsNavbar({
   };
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: 20,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 40
-    }}>
       <motion.div
+        drag
+        dragControls={dragControls}
+        dragMomentum={false}
+        dragElastic={0.1}
+        dragConstraints={{ top: 0, left: -500, right: 500, bottom: 500 }}
+        dragListener={false}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}
+        style={{
+          position: 'fixed',
+          top: 20,
+          left: '50%',
+          x: '-50%',
+          zIndex: 40,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          cursor: 'default',
+          outline: 'none',
+          border: 'none'
+        }}
       >
         {/* Unified compact toolbar */}
         <div 
@@ -132,6 +145,22 @@ export default function ToolsNavbar({
             boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
           }}
         >
+          {/* Drag Handle */}
+          <div 
+            onPointerDown={(e) => dragControls.start(e)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 24,
+              height: 36,
+              cursor: 'grab',
+              borderRadius: 6,
+              marginRight: 2
+            }}
+          >
+            <GripVertical size={14} color="rgba(255,255,255,0.3)" />
+          </div>
           {/* Search Input */}
           <div style={{ position: 'relative' }}>
             <div style={{
@@ -401,7 +430,6 @@ export default function ToolsNavbar({
           )}
         </AnimatePresence>
       </motion.div>
-    </div>
   );
 }
 
