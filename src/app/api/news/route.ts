@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { applyRateLimit } from '@/lib/rateLimit';
 
-const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyAKBC8isX--9XLnm8Xmm_BU_jOsLXopcuU';
-const genAI = new GoogleGenerativeAI(API_KEY);
+const API_KEY = process.env.GEMINI_API_KEY;
+if (!API_KEY) {
+  console.warn('GEMINI_API_KEY environment variable is not set. News API will not work.');
+}
+const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
 export interface NewsArticle {
   title: string;
@@ -22,6 +26,10 @@ export interface CompanyNewsResponse {
 
 // Helper function to generate content with model fallback
 const generateContentWithFallback = async (prompt: string): Promise<string> => {
+  if (!genAI) {
+    throw new Error('AI service is not configured. Please set the GEMINI_API_KEY environment variable.');
+  }
+
   const modelNames = ['gemini-2.0-flash-exp', 'gemini-2.0-flash'];
   let lastError: any;
   
@@ -106,6 +114,9 @@ async function fetchCompanyNews(companyName: string, ticker?: string): Promise<N
 }
 
 export async function POST(request: Request) {
+  const rateLimitResponse = applyRateLimit(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { companies } = await request.json();
 

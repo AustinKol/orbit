@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { analyzeText, analyzeNews, analyzeGeneralFinance } from '@/services/aiService';
+import { applyRateLimit } from '@/lib/rateLimit';
 
 // Type guard to check if result has an error property
 function hasError(result: unknown): result is { error: string } {
@@ -7,6 +8,9 @@ function hasError(result: unknown): result is { error: string } {
 }
 
 export async function POST(request: Request) {
+  const rateLimitResponse = applyRateLimit(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { text, type } = await request.json();
 

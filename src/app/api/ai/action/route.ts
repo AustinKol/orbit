@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { analyzeUserIntent } from '@/services/aiService';
+import { applyRateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: Request) {
+  const rateLimitResponse = applyRateLimit(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { text, companies, edgeTypes } = await request.json();
 
