@@ -174,7 +174,6 @@ const generateDensityField = (
 
 export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundClick, highlightNodes, highlightEdges, focusedNodeId, enabledEdgeTypes, affectedCompanies, pathMode = false, watchlist, cycleMode = false }: Props) {
   const fgRef = useRef<any>(null);
-  const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 1000));
   const densityUpdateTimer = useRef<NodeJS.Timeout | null>(null);
   const [webglLost, setWebglLost] = useState(false);
 
@@ -300,18 +299,11 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
     };
   }, [data, enabledEdgeTypes, pathMode, cycleMode, highlightNodes, highlightEdges, watchlist]);
 
-  // Track camera
-  useEffect(() => {
-    if (!fgRef.current) return;
-    const updateCameraPosition = () => {
-      const camera = fgRef.current.camera();
-      if (camera) {
-        setCameraPosition(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
-      }
-    };
-    const interval = setInterval(updateCameraPosition, 100);
-    return () => clearInterval(interval);
-  }, []);
+  // Cycle/path mode shows only a small subgraph, which needs its own layout and camera framing
+  const subgraphActive = (cycleMode || pathMode) && highlightNodes.size > 0;
+  const wasSubgraphActive = useRef(false);
+  // Ticks remaining until the camera is fitted to the graph (-1 = no fit pending)
+  const fitTicksRemaining = useRef(-1);
 
   // Setup nebula scene
   useEffect(() => {
@@ -663,7 +655,28 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
   // Zoom to focused node and push other nodes to the sides
   useEffect(() => {
     if (!fgRef.current) return;
-    
+
+    const enteringOrLeavingSubgraph = subgraphActive !== wasSubgraphActive.current;
+    wasSubgraphActive.current = subgraphActive;
+
+    if (subgraphActive) {
+        // Let the subgraph lay itself out freely: pinned nodes (from a previous focus)
+        // would stay at their old full-graph positions and can't be dragged as a group
+        filteredData.nodes.forEach((n: any) => {
+          n.fx = undefined;
+          n.fy = undefined;
+          n.fz = undefined;
+        });
+        originalPositions.current.clear();
+        // Frame the subgraph once it has settled a bit, so orbiting rotates around it
+        fitTicksRemaining.current = 60;
+        return;
+    }
+
+    if (enteringOrLeavingSubgraph && !focusedNodeId) {
+        fitTicksRemaining.current = 60;
+    }
+
     if (focusedNodeId) {
         const node = filteredData.nodes.find(n => n.id === focusedNodeId) || data.nodes.find(n => n.id === focusedNodeId);
         if (node && typeof node.x === 'number') {
@@ -716,7 +729,9 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
               }
             });
             
-            // Zoom camera to the focused node
+            // Zoom camera to the focused node. Skipped while cycle/path mode waits for its
+            // subgraph: camera tweens can't be cancelled, so this one would override the fit
+            if (cycleMode || pathMode) return;
             const nodePos = new THREE.Vector3(centerX, centerY, centerZ);
             const distance = 300;
             const direction = new THREE.Vector3(0.3, 0.5, 0.8).normalize();
@@ -751,7 +766,7 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
           fgRef.current.d3ReheatSimulation();
         }
     }
-  }, [focusedNodeId, data.nodes, filteredData]);
+  }, [focusedNodeId, data.nodes, filteredData, subgraphActive, cycleMode, pathMode]);
 
   // Create glowing star mesh
   const createStarMesh = useCallback((node: any, isSelected: boolean, isHighlighted: boolean) => {
@@ -982,6 +997,12 @@ export default function GraphViz({ data, onNodeClick, onLinkClick, onBackgroundC
         showNavInfo={false}
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.3}
+        onEngineTick={() => {
+          if (fitTicksRemaining.current < 0) return;
+          if (fitTicksRemaining.current-- === 0) {
+            fgRef.current?.zoomToFit(800, 80);
+          }
+        }}
         controlType="orbit"
       />
     </div>
