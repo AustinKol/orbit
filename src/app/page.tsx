@@ -93,8 +93,8 @@ export default function Home() {
     // If in path mode or news mode, don't change highlighting on node click
     if (pathMode || newsMode) return;
 
-    // If in cycle mode, the CyclesPanel will handle highlighting via useEffect
-    // So we don't need to do neighbor highlighting
+    // If in cycle mode, the CyclesPanel owns highlighting (and keeps the current
+    // cycles when the clicked node is part of them), so skip neighbor highlighting
     if (cycleMode) return;
 
     // Simple neighbor highlighting

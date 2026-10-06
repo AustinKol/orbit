@@ -1305,6 +1305,10 @@ function CyclesPanel({
   // Sync local selection with external selectedNodeId (when clicking on graph)
   useEffect(() => {
     if (selectedNodeId) {
+      // Clicking a node that belongs to the detected cycles is just for inspecting it;
+      // re-anchoring would refetch and collapse the view to that node's shortest cycle
+      if (cycles.some(c => c.path.includes(selectedNodeId))) return;
+
       const node = nodes.find(n => n.id === selectedNodeId);
       if (node && (!localSelectedNode || localSelectedNode.id !== selectedNodeId)) {
         setLocalSelectedNode(node);
