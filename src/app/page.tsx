@@ -77,13 +77,14 @@ export default function Home() {
     setSelectedNode(null);
     setSelectedEdge(null);
     setAllRelationships([]);
-    setHighlightNodes(new Set());
-    setHighlightEdges(new Set());
-    setPathMode(false);
+    // Don't clear a found cycle or path - only the Clear button in its menu does that
+    if (!cycleMode && !pathMode) {
+      setHighlightNodes(new Set());
+      setHighlightEdges(new Set());
+    }
     setNewsMode(false);
     setNewsAnalysis(null);
-    // Don't clear cycle mode - user must toggle it off manually
-  }, []);
+  }, [cycleMode, pathMode]);
 
   const handleNodeClick = useCallback((node: GraphNode) => {
     // Always allow selecting the node to show its card

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sliders, GitBranch, Search, X, ArrowRight, CheckCircle2, Loader2, AlertCircle, CheckSquare, Square, Info, Star, Sparkles, Route, RefreshCw, Building2, GripVertical } from 'lucide-react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { GraphNode, EdgeType, PathItem, PathsResponse, CycleResultWithEdges, CyclesResponse } from '@/types';
@@ -49,10 +49,14 @@ export default function ToolsNavbar({
 
   const handleToolClick = (tool: ActiveTool) => {
     if (tool === 'cycles') {
-      // Toggle cycle mode
-      const newEnabled = !cycleMode;
-      onCycleModeToggle(newEnabled);
-      setActiveTool(newEnabled ? 'cycles' : null);
+      // The button turns cycle mode on, then only shows/hides the menu;
+      // the menu's Clear button is what turns cycle mode off
+      if (!cycleMode) {
+        onCycleModeToggle(true);
+        setActiveTool('cycles');
+      } else {
+        setActiveTool(activeTool === 'cycles' ? null : 'cycles');
+      }
     } else {
       // For other tools, toggle as before
       setActiveTool(activeTool === tool ? null : tool);
@@ -67,6 +71,34 @@ export default function ToolsNavbar({
       setActiveTool(null);
     }
   }, [cycleMode]);
+
+  // Clicking anywhere outside the cycles or path menu hides it; the found
+  // cycles/path stay on the graph until the menu's Clear button is used
+  const cyclesPanelRef = useRef<HTMLDivElement>(null);
+  const cyclesButtonRef = useRef<HTMLButtonElement>(null);
+  const pathPanelRef = useRef<HTMLDivElement>(null);
+  const pathButtonRef = useRef<HTMLButtonElement>(null);
+  // Path Finder mounts on first open (its effects reset the highlights on mount),
+  // then stays mounted so hiding it keeps the chosen companies and found paths
+  const [pathPanelMounted, setPathPanelMounted] = useState(false);
+  useEffect(() => {
+    if (activeTool === 'path') setPathPanelMounted(true);
+  }, [activeTool]);
+  useEffect(() => {
+    const refs = activeTool === 'cycles' ? [cyclesPanelRef, cyclesButtonRef]
+      : activeTool === 'path' ? [pathPanelRef, pathButtonRef]
+      : null;
+    if (!refs) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      // The tool's own button handles its own toggle
+      if (!refs.some(ref => ref.current?.contains(target))) {
+        setActiveTool(null);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [activeTool]);
 
   // Search handlers
   const handleSearch = (val: string) => {
@@ -299,6 +331,7 @@ export default function ToolsNavbar({
 
           {/* Path Button */}
           <motion.button
+            ref={pathButtonRef}
             onClick={() => handleToolClick('path')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -364,6 +397,7 @@ export default function ToolsNavbar({
 
           {/* Cycles Button */}
           <motion.button
+            ref={cyclesButtonRef}
             onClick={() => handleToolClick('cycles')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -401,34 +435,40 @@ export default function ToolsNavbar({
               />
             </motion.div>
           )}
-          {activeTool === 'path' && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <PathFinderPanel
-                nodes={nodes}
-                onPathFound={onPathFound}
-              />
-            </motion.div>
-          )}
-          {activeTool === 'cycles' && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <CyclesPanel
-                nodes={nodes}
-                selectedNodeId={selectedNodeId}
-                onCyclesFound={onCyclesFound}
-              />
-            </motion.div>
-          )}
         </AnimatePresence>
+        {pathPanelMounted && (
+          <motion.div
+            ref={pathPanelRef}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={activeTool === 'path'
+              ? { opacity: 1, y: 0, scale: 1, display: 'block' }
+              : { opacity: 0, y: -10, scale: 0.95, transitionEnd: { display: 'none' } }}
+            transition={{ duration: 0.2 }}
+          >
+            <PathFinderPanel
+              nodes={nodes}
+              onPathFound={onPathFound}
+            />
+          </motion.div>
+        )}
+        {/* Stays mounted while cycle mode is on so hiding the menu keeps the found cycles */}
+        {cycleMode && (
+          <motion.div
+            ref={cyclesPanelRef}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={activeTool === 'cycles'
+              ? { opacity: 1, y: 0, scale: 1, display: 'block' }
+              : { opacity: 0, y: -10, scale: 0.95, transitionEnd: { display: 'none' } }}
+            transition={{ duration: 0.2 }}
+          >
+            <CyclesPanel
+              nodes={nodes}
+              selectedNodeId={selectedNodeId}
+              onCyclesFound={onCyclesFound}
+              onExit={() => onCycleModeToggle(false)}
+            />
+          </motion.div>
+        )}
       </motion.div>
   );
 }
@@ -1241,11 +1281,13 @@ function PathFinderPanel({
 function CyclesPanel({ 
   nodes, 
   selectedNodeId,
-  onCyclesFound 
+  onCyclesFound,
+  onExit
 }: { 
   nodes: GraphNode[]; 
   selectedNodeId?: string;
   onCyclesFound: (cycles: CycleResultWithEdges[] | null, highlightNodes: Set<string>, highlightEdges: Set<string>) => void;
+  onExit: () => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1408,10 +1450,6 @@ function CyclesPanel({
 
   const handleSelectAll = () => {
     setSelectedCycleIds(new Set(cycles.map(c => c.cycleId)));
-  };
-
-  const handleClearSelection = () => {
-    setSelectedCycleIds(new Set());
   };
 
   const getNodeLabel = (nodeId: string): string => {
@@ -1637,7 +1675,8 @@ function CyclesPanel({
                     All
                   </motion.button>
                   <motion.button
-                    onClick={handleClearSelection}
+                    // Leaves cycle mode entirely and returns to the full graph
+                    onClick={onExit}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     style={{
